@@ -106,7 +106,9 @@
 #include <linux/blkpg.h>
 #include <netpacket/packet.h>
 #include <linux/netlink.h>
+#if defined(CONFIG_AF_ALG)
 #include <linux/if_alg.h>
+#endif
 #include "linux_loop.h"
 #include "uname.h"
 
@@ -4138,9 +4140,6 @@ static inline abi_ulong do_shmat(CPUArchState *cpu_env,
             return -TARGET_EINVAL;
         }
     }
-    if (!guest_range_valid(shmaddr, shm_info.shm_segsz)) {
-        return -TARGET_EINVAL;
-    }
 
     mmap_lock();
 
@@ -6990,7 +6989,7 @@ static int open_self_maps(void *cpu_env, int fd)
         }
         if (h2g_valid(min)) {
             int flags = page_get_flags(h2g(min));
-            max = h2g_valid(max - 1) ? max : (uintptr_t)g2h(GUEST_ADDR_MAX) + 1;
+            max = h2g_valid(max - 1) ? max : (uintptr_t)g2h(GUEST_ADDR_MAX);
             if (page_check_range(h2g(min), max - min, flags) == -1) {
                 continue;
             }

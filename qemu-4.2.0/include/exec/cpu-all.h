@@ -162,12 +162,8 @@ extern unsigned long guest_base;
 extern int have_guest_base;
 extern unsigned long reserved_va;
 
-#if HOST_LONG_BITS <= TARGET_VIRT_ADDR_SPACE_BITS
-#define GUEST_ADDR_MAX (~0ul)
-#else
-#define GUEST_ADDR_MAX (reserved_va ? reserved_va - 1 : \
+#define GUEST_ADDR_MAX (reserved_va ? reserved_va : \
                                     (1ul << TARGET_VIRT_ADDR_SPACE_BITS) - 1)
-#endif
 #else
 
 #include "exec/hwaddr.h"

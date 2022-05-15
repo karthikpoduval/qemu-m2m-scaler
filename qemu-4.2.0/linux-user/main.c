@@ -78,7 +78,7 @@ int have_guest_base;
       (TARGET_LONG_BITS == 32 || defined(TARGET_ABI32))
 /* There are a number of places where we assign reserved_va to a variable
    of type abi_ulong and expect it to fit.  Avoid the last page.  */
-#   define MAX_RESERVED_VA(CPU)  (0xfffffffful & TARGET_PAGE_MASK)
+#   define MAX_RESERVED_VA(CPU)  (0x7ffffffful & TARGET_PAGE_MASK)
 #  else
 #   define MAX_RESERVED_VA(CPU)  (1ul << TARGET_VIRT_ADDR_SPACE_BITS)
 #  endif

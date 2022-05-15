@@ -1210,4 +1210,12 @@ all: $(QEMU_IOTESTS_HELPERS-y)
 -include $(wildcard tests/*.d)
 -include $(wildcard tests/libqos/*.d)
 
+buildtest-TESTS: $(check-unit-y)
+
+runtest-TESTS:
+	for f in $(check-unit-y); do \
+		nf=$$(echo $$f | sed 's/tests\//\.\//g'); \
+		$$nf; \
+	done
+
 endif

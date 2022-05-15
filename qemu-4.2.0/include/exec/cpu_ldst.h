@@ -65,7 +65,10 @@ typedef uint64_t abi_ptr;
 #if HOST_LONG_BITS <= TARGET_VIRT_ADDR_SPACE_BITS
 #define guest_addr_valid(x) (1)
 #else
-#define guest_addr_valid(x) ((x) <= GUEST_ADDR_MAX)
+#define guest_addr_valid(x) ({ \
+    ((x) < (1ul << TARGET_VIRT_ADDR_SPACE_BITS)) && \
+    (!reserved_va || ((x) < reserved_va)); \
+})
 #endif
 #define h2g_valid(x) guest_addr_valid((unsigned long)(x) - guest_base)
 

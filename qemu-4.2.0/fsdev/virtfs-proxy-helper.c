@@ -13,7 +13,6 @@
 #include <sys/resource.h>
 #include <getopt.h>
 #include <syslog.h>
-#include <sys/capability.h>
 #include <sys/fsuid.h>
 #include <sys/vfs.h>
 #include <sys/ioctl.h>
@@ -27,7 +26,11 @@
 #include "9p-iov-marshal.h"
 #include "hw/9pfs/9p-proxy.h"
 #include "fsdev/9p-iov-marshal.h"
-
+/*
+ * Include this one last due to some versions of it being buggy:
+ * http://www.linuxtv.org/pipermail/vdr/2009-August/021194.html
+ */
+#include <sys/capability.h>
 #define PROGNAME "virtfs-proxy-helper"
 
 #ifndef XFS_SUPER_MAGIC

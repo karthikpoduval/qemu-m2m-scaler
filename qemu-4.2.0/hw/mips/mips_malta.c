@@ -59,7 +59,7 @@
 
 #define ENVP_ADDR           0x80002000l
 #define ENVP_NB_ENTRIES     16
-#define ENVP_ENTRY_SIZE     256
+#define ENVP_ENTRY_SIZE     1024
 
 /* Hardware addresses */
 #define FLASH_ADDRESS       0x1e000000ULL

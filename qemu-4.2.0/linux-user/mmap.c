@@ -78,7 +78,7 @@ int target_mprotect(abi_ulong start, abi_ulong len, int prot)
         return -TARGET_EINVAL;
     len = TARGET_PAGE_ALIGN(len);
     end = start + len;
-    if (!guest_range_valid(start, len)) {
+    if (end < start) {
         return -TARGET_ENOMEM;
     }
     prot &= PROT_READ | PROT_WRITE | PROT_EXEC;
@@ -495,8 +495,8 @@ abi_long target_mmap(abi_ulong start, abi_ulong len, int prot,
          * It can fail only on 64-bit host with 32-bit target.
          * On any other target/host host mmap() handles this error correctly.
          */
-        if (!guest_range_valid(start, len)) {
-            errno = ENOMEM;
+        if ((unsigned long)start + len - 1 > (abi_ulong) -1) {
+            errno = EINVAL;
             goto fail;
         }
 
@@ -636,10 +636,8 @@ int target_munmap(abi_ulong start, abi_ulong len)
     if (start & ~TARGET_PAGE_MASK)
         return -TARGET_EINVAL;
     len = TARGET_PAGE_ALIGN(len);
-    if (len == 0 || !guest_range_valid(start, len)) {
+    if (len == 0)
         return -TARGET_EINVAL;
-    }
-
     mmap_lock();
     end = start + len;
     real_start = start & qemu_host_page_mask;
@@ -693,13 +691,6 @@ abi_long target_mremap(abi_ulong old_addr, abi_ulong old_size,
 {
     int prot;
     void *host_addr;
-
-    if (!guest_range_valid(old_addr, old_size) ||
-        ((flags & MREMAP_FIXED) &&
-         !guest_range_valid(new_addr, new_size))) {
-        errno = ENOMEM;
-        return -1;
-    }
 
     mmap_lock();
 
